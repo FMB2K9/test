@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protected Page</title>
+</head>
+<body>
+  <h1>Welcome to the Protected Page!</h1>
+  <p id="user-info"></p>
+  <button id="sign-out">Sign Out</button>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBiJ_uZZiV2TEf_KTOafAp3Mh6McWzJCv0",
+      authDomain: "skygen-login.firebaseapp.com",
+      projectId: "skygen-login",
+      storageBucket: "skygen-login.firebasestorage.app",
+      messagingSenderId: "536521368487",
+      appId: "1:536521368487:web:bda690853dbfbb2b21cc82"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Check authentication state
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, display content
+        document.getElementById('user-info').textContent = `Hello, ${user.displayName || user.email}!`;
+      } else {
+        // User is not signed in, redirect to login page
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Sign out
+    document.getElementById('sign-out').addEventListener('click', () => {
+      auth.signOut()
+        .then(() => {
+          window.location.href = 'index.html';
+        })
+        .catch((error) => {
+          document.getElementById('user-info').textContent = `Sign-out error: ${error.message}`;
+        });
+    });
+  </script>
+</body>
+</html>
