@@ -34,6 +34,14 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Check if user is already signed in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Redirect to protected page if signed in
+        window.location.href = 'protected.html';
+      }
+    });
+
     // Email/Password Sign-In
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -42,7 +50,8 @@
       auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
           document.getElementById('message').textContent = 'Signed in successfully!';
-          console.log('User:', userCredential.user);
+          // Redirect to protected page
+          window.location.href = 'protected.html';
         })
         .catch((error) => {
           document.getElementById('message').textContent = `Error: ${error.message}`;
@@ -55,7 +64,8 @@
       auth.signInWithPopup(provider)
         .then((result) => {
           document.getElementById('message').textContent = 'Signed in with Google!';
-          console.log('User:', result.user);
+          // Redirect to protected page
+          window.location.href = 'protected.html';
         })
         .catch((error) => {
           document.getElementById('message').textContent = `Error: ${error.message}`;
@@ -68,7 +78,8 @@
       auth.signInWithPopup(provider)
         .then((result) => {
           document.getElementById('message').textContent = 'Signed in with GitHub!';
-          console.log('User:', result.user);
+          // Redirect to protected page
+          window.location.href = 'protected.html';
         })
         .catch((error) => {
           document.getElementById('message').textContent = `Error: ${error.message}`;
