@@ -4,6 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Secure Sign-In</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    button {
+      cursor: pointer;
+    }
+    #message {
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <h1>Sign In</h1>
@@ -16,10 +36,12 @@
   <button id="github-signin">Sign in with GitHub</button>
   <p id="message"></p>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
-  <script>
+  <!-- Firebase SDK (loaded as modules) -->
+  <script type="module">
+    // Import Firebase SDK modules
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+
     // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBiJ_uZZiV2TEf_KTOafAp3Mh6McWzJCv0",
@@ -31,13 +53,12 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // Check if user is already signed in
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Redirect to protected page if signed in
         window.location.href = 'protected.html';
       }
     });
@@ -47,10 +68,9 @@
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           document.getElementById('message').textContent = 'Signed in successfully!';
-          // Redirect to protected page
           window.location.href = 'protected.html';
         })
         .catch((error) => {
@@ -60,11 +80,10 @@
 
     // Google Sign-In
     document.getElementById('google-signin').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
         .then((result) => {
           document.getElementById('message').textContent = 'Signed in with Google!';
-          // Redirect to protected page
           window.location.href = 'protected.html';
         })
         .catch((error) => {
@@ -74,11 +93,10 @@
 
     // GitHub Sign-In
     document.getElementById('github-signin').addEventListener('click', () => {
-      const provider = new firebase.auth.GithubAuthProvider();
-      auth.signInWithPopup(provider)
+      const provider = new GithubAuthProvider();
+      signInWithPopup(auth, provider)
         .then((result) => {
           document.getElementById('message').textContent = 'Signed in with GitHub!';
-          // Redirect to protected page
           window.location.href = 'protected.html';
         })
         .catch((error) => {
