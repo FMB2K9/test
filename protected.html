@@ -4,16 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Protected Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      cursor: pointer;
+    }
+    #user-info {
+      color: green;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to the Protected Page!</h1>
   <p id="user-info"></p>
   <button id="sign-out">Sign Out</button>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
-  <script>
+  <!-- Firebase SDK (loaded as modules) -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+
     // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBiJ_uZZiV2TEf_KTOafAp3Mh6McWzJCv0",
@@ -25,23 +44,21 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // Check authentication state
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, display content
         document.getElementById('user-info').textContent = `Hello, ${user.displayName || user.email}!`;
       } else {
-        // User is not signed in, redirect to login page
         window.location.href = 'index.html';
       }
     });
 
     // Sign out
     document.getElementById('sign-out').addEventListener('click', () => {
-      auth.signOut()
+      signOut(auth)
         .then(() => {
           window.location.href = 'index.html';
         })
